@@ -63,16 +63,21 @@ func Run(searchTerm string) {
 	Display(results)
 }
 
+// Perform the search and send all results to the results channel
 func Match(matcher Matcher, feed *Feed, searchTerm string, results chan<- *Result) {
+
+	// Searching for matched data based on provided term from the provided feed
 	returnedResults, err := matcher.Search(feed, searchTerm)
 	if err != nil {
 		log.Fatalf("failure on search \"%v\" on feed \"%v\" : %v", searchTerm, feed.Name, err)
 	}
+	// sending the received data to the results channel
 	for _, result := range returnedResults {
 		results <- result
 	}
 }
 
+// Display the results on the stdout
 func Display(results chan*Result) {
 	for result := range results {
 		fmt.Printf("%s:\n%s\n\n", result.Field, result.Content)
